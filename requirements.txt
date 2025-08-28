@@ -1,0 +1,17 @@
+numpy
+pandas
+scipy
+scikit-learn
+matplotlib
+seaborn
+plotly
+geopandas
+shapely
+folium
+contextily
+requests
+beautifulsoup4
+pyarrow
+fastparquet
+jupyterlab
+ipykernel
