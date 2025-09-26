@@ -7,15 +7,28 @@ Project for Data Mining
     To deactivate: conda deactivate
 
 
- *Fraud / Anomaly Detection in Financial Transactions*
+Currently experimenting with different API services
+    must be free, with good relevant data in an interesting field. 
 
-    - **Problem**: Fraud detection is a classic high-impact domain.
+List of API's I am testing
 
-    - **What I'm doing**:
-        - Use open datasets like credit card fraud detection (Kaggle).
+    - https://rolling-insights.com/about-us/
+        Provides lots of different sports, also looks great if free plan is available
 
-        - Experiment with unsupervised anomaly detection (Isolation Forest, Autoencoders, clustering).
+    - https://footystats.org/api/ 
+        Free tier only provides Premier League games, not sure if there is enough data
 
-        - Deploy a real-time fraud flagger API with dashboards for suspicious activity.
+    - https://www.sportmonks.com/football-api/
+        Covers all of european football, not sure what the free plan entails
 
-    - **Impact**: Recruiters love fraud detection → it screams machine learning applied to money.
+    - https://highlightly.net/ 
+        offers free plan, looks great
+    
+    - https://github.com/swar/nba_api
+        custom built APi to pull from NBA.com
+
+    - https://publicapis.dev
+        one place to find all publicly available API's
+    
+    - https://developers.strava.com/docs/reference/
+        strava api documentation
