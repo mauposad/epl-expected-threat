@@ -10,25 +10,26 @@ Project for Data Mining
 Currently experimenting with different API services
     must be free, with good relevant data in an interesting field. 
 
-List of API's I am testing
+### List of API's I am testing
 
-    - https://rolling-insights.com/about-us/
-        Provides lots of different sports, also looks great if free plan is available
+1. [**Rolling Insights**] (https://rolling-insights.com/about-us/)
+    - Provides lots of different sports, also looks great if free plan is available
 
-    - https://footystats.org/api/ 
-        Free tier only provides Premier League games, not sure if there is enough data
+2. [**FootyStats**] (https://footystats.org/api/ )
+    - NOTES: Free tier only includes a Premier League
+    - Need to play around more to be able to pull the data we want and archive into database of some sort. 
 
-    - https://www.sportmonks.com/football-api/
-        Covers all of european football, not sure what the free plan entails
+3. [**SportsMonk**] (https://www.sportmonks.com/football-api/)
+    - Covers all of european football, not sure what the free plan entails
 
-    - https://highlightly.net/ 
-        offers free plan, looks great
+4. [**Highlightly**] (https://highlightly.net/ )
+    - offers free plan, looks great
     
-    - https://github.com/swar/nba_api
-        custom built APi to pull from NBA.com
+5. [**NBA API**] (https://github.com/swar/nba_api)
+    - custom built APi to pull from NBA.com
 
-    - https://publicapis.dev
-        one place to find all publicly available API's
+6. [**Public API**] (https://publicapis.dev)
+    - one place to find all publicly available API's
     
-    - https://developers.strava.com/docs/reference/
-        strava api documentation
+7. [**Strava**] (https://developers.strava.com/docs/reference/)
+    - strava api documentation
