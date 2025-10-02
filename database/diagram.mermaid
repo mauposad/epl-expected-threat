@@ -1,8 +1,12 @@
 classDiagram
-    class Users {
-        int id
-        string username
-        string email
+    class Data {
+        variable id
+        variable continent
+        variable image
+        variable season
+        variable url
+        variable table_position
+        
     }
 
     class Orders {
@@ -19,5 +23,5 @@ classDiagram
         int quantity
     }
 
-    Users "1" --> "many" Orders
+    Data "1" --> "many" Orders
     Orders "1" --> "many" OrderItems

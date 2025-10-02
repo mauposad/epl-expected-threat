@@ -21,10 +21,11 @@ r = requests.get(f"https://api.football-data-api.com/todays-matches?key={FOOTYST
 print(r.status_code)
 # print(r.json())
 
-# Getting each teams stats
+# Getting Arsenal teams stats (team_id = 59)
 r = requests.get(f"https://api.football-data-api.com/team?key={FOOTYSTATS_API_KEY}&team_id=59&include=stats")
 print(r.status_code)
-print(r.json())
+# print(r.json())
+print(r.json()["data"][3])
 
 
 """Notes:

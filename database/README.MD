@@ -6,3 +6,7 @@ The mermaid diagram is in charge of mapping it. Portraying DB as a class diagram
 Can preview diagram by doing the following
 
     -Ctrl + Shift + P > Mermaid Preview: Preview Diagram
+
+
+Link to the structure of our json package we are working with:
+[**FootyStats**](https://footystats.org/api/documentations/team) 
