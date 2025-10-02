@@ -17,3 +17,4 @@ jupyterlab
 ipykernel
 fastapi
 pydantic
+sqlalchemy

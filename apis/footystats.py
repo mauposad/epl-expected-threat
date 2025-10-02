@@ -9,7 +9,6 @@ import os
 
 load_dotenv()
 FOOTYSTATS_API_KEY = os.getenv("FOOTYSTATS_API_KEY")
-print(f"API_KEY: {FOOTYSTATS_API_KEY}")
 
 # get a list of all leagues
 r = requests.get(f"https://api.football-data-api.com/league-list?key={FOOTYSTATS_API_KEY}")
@@ -25,7 +24,7 @@ print(r.status_code)
 # Getting each teams stats
 r = requests.get(f"https://api.football-data-api.com/team?key={FOOTYSTATS_API_KEY}&team_id=59&include=stats")
 print(r.status_code)
-# print(r.json())
+print(r.json())
 
 
 """Notes:

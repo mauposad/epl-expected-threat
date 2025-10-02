@@ -1,0 +1,23 @@
+classDiagram
+    class Users {
+        int id
+        string username
+        string email
+    }
+
+    class Orders {
+        int id
+        int user_id
+        string status
+        float total
+    }
+
+    class OrderItems {
+        int id
+        int order_id
+        string product
+        int quantity
+    }
+
+    Users "1" --> "many" Orders
+    Orders "1" --> "many" OrderItems
