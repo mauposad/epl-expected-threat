@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8" />
+<title>JMESPath Playground (Local)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- JMESPath JS (browser) -->
+<script src="https://cdn.jsdelivr.net/npm/jmespath@0.16.0/artifacts/jmespath.min.js"></script>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:1rem;line-height:1.4}
+  header{font-weight:700;margin-bottom:.5rem}
+  .controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.5rem}
+  .controls input[type="text"]{flex:1 1 420px;padding:.5rem;border:1px solid #ccc;border-radius:.4rem}
+  .controls button,input[type="file"]{padding:.5rem .8rem;border:1px solid #ccc;border-radius:.4rem;background:#f7f7f7;cursor:pointer}
+  .panes{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+  textarea,pre{height:60vh;border:1px solid #ddd;border-radius:.4rem;padding:.75rem;overflow:auto}
+  textarea{font-family:ui-monospace,Consolas,monospace}
+  pre{background:#fafafa;margin:0}
+  .error{outline:2px solid #e53935}
+  @media (max-width:900px){.panes{grid-template-columns:1fr}}
+</style>
+<body>
+  <header>JMESPath Playground (Local)</header>
+  <div class="controls">
+    <input id="expr" type="text" placeholder="JMESPath expression (e.g. items[?total > `100`].{email: user.email, total: total})" />
+    <button id="run">Run</button>
+    <button id="format">Format JSON</button>
+    <input id="file" type="file" accept=".json,application/json" />
+    <button id="download">Download result</button>
+  </div>
+
+  <div class="panes">
+    <textarea id="input" spellcheck="false" placeholder="Paste JSON here"></textarea>
+    <pre id="output"></pre>
+  </div>
+
+<script>
+const $ = s => document.querySelector(s);
+const input = $('#input'), output = $('#output'), expr = $('#expr');
+let parsed = null;
+
+function parseJSON() {
+  try {
+    parsed = JSON.parse(input.value);
+    input.classList.remove('error');
+    return true;
+  } catch (e) {
+    output.textContent = 'Invalid JSON: ' + e.message;
+    input.classList.add('error');
+    return false;
+  }
+}
+function evaluate() {
+  if (!parseJSON()) return;
+  try {
+    const e = expr.value.trim() || '@';           // '@' returns the input as-is
+    const res = jmespath.search(parsed, e);
+    output.textContent = JSON.stringify(res, null, 2);
+  } catch (e) {
+    output.textContent = 'JMESPath error: ' + e.message;
+  }
+}
+
+$('#run').addEventListener('click', evaluate);
+$('#format').addEventListener('click', () => { if (parseJSON()) input.value = JSON.stringify(parsed, null, 2); });
+$('#file').addEventListener('change', ev => {
+  const file = ev.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => { input.value = reader.result; evaluate(); };
+  reader.readAsText(file);
+});
+$('#download').addEventListener('click', () => {
+  const blob = new Blob([output.textContent || ''], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'result.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Preload a tiny sample so you can hit "Run" immediately:
+input.value = JSON.stringify(
+  { items:[
+      { user:{email:"a@x.com"}, total:150, tags:["alpha","beta"] },
+      { user:{email:"b@x.com"}, total:80,  tags:["beta"] }
+    ]}, null, 2);
+expr.value = "items[?total > `100`].{email: user.email, total: total}";
+evaluate();
+</script>
+</body>
+</html>

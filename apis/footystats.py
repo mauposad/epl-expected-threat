@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 import requests
 import os
+import jmespath, json
 
 
 load_dotenv()
@@ -23,11 +24,17 @@ print(r.status_code)
 
 # Getting Arsenal teams stats (team_id = 59)
 r = requests.get(f"https://api.football-data-api.com/team?key={FOOTYSTATS_API_KEY}&team_id=59&include=stats")
-print(r.status_code)
+r.raise_for_status()
 # print(r.json())
-print(r.json()["data"][3])
+data = r.json()
+
+# Serializing back to file
+with open("payload.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+# always re-serialize api's to enforce validity
+
+print("Saved payload.json with", len(json.dumps(data)), "characters")
 
 
-"""Notes:
-
-Formatting from said API Service could prove to be very difficult. Automation on its own will be a challenge in itself. """
+with open("payload.json") as f:
+    data = json.load(f)
