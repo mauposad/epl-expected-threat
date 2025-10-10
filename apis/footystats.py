@@ -24,42 +24,48 @@ FOOTYSTATS_API_KEY = os.getenv("FOOTYSTATS_API_KEY")
 # print(r.status_code)
 # print(r.json())
 
-# Getting Arsenal teams stats (team_id = 59)
-r = requests.get(f"https://api.football-data-api.com/team?key={FOOTYSTATS_API_KEY}&team_id=59&include=stats")
+r = requests.get(f"https://api.football-data-api.com/league-list?key={FOOTYSTATS_API_KEY}")
 r.raise_for_status()
-# print(r.json())
 data = r.json()
 
-# shouldn't be so hard coded, find a more dynamic way of doing things
-expr = "data[0:2]"  # can do 0:n to pull different amounts of packages.
-subset = jmespath.search(expr, data)
-
-# Serializing back to file
 with open("payload.json", "w", encoding="utf-8") as f:
-    json.dump(subset, f, indent=2, ensure_ascii=False)
+    json.dump(data, f, indent=2, ensure_ascii=False)
 
-# always re-serialize api's to enforce validity
-print("Saved payload.json with", len(json.dumps(subset)), "characters")
-
+print(f"Saved payload.json with ", len(json.dumps(data)), "characters")
 
 with open("payload.json") as f:
     subset = json.load(f)
 
 
-# Still have a nested package within my dataframe
+r = requests.get(
+    f"https://api.football-data-api.com/league-teams?key={FOOTYSTATS_API_KEY}Y&season_id=12325&include=stats "
+)
+r.raise_for_status()
+
+# Getting Arsenal teams stats (team_id = 59)
+# r = requests.get(f"https://api.football-data-api.com/team?key={FOOTYSTATS_API_KEY}&team_id=60&include=stats")
+# r.raise_for_status()
+# # print(r.json())
+# data = r.json()
+
+# # shouldn't be so hard coded, find a more dynamic way of doing things
+# expr = "data[0:2]"  # can do 0:n to pull different amounts of packages.
+# subset = jmespath.search(expr, data)
+
+# # Serializing back to file
+# with open("payload.json", "w", encoding="utf-8") as f:
+#     json.dump(subset, f, indent=2, ensure_ascii=False)
+
+# # always re-serialize api's to enforce validity
+# print("Saved payload.json with", len(json.dumps(subset)), "characters")
 
 
-# df = pd.json_normalize(subset, max_level=None)
+# with open("payload.json") as f:
+#     subset = json.load(f)
+
+
+# df = pd.json_normalize(subset, sep="_", max_level=None)
 # print(df.shape)
-# print(df.head)
-# print(df.tail)
-# print(df.columns.tolist)
+# print(df.columns[:25])
 
-
-# pd.set_option("display.max_rows", 15)  # show all rows
-# pd.set_option("display.max_columns", None)  # show all columns
-# pd.set_option("display.width", None)  # don't wrap lines
-# pd.set_option("display.colheader_justify", "center")  # headers aligned
-# pd.set_option("display.precision", 3)  # decimals precision
-
-# print(df)
+# print(df.at[1, "stats_additional_info_dangerous_attacks_num_away"])

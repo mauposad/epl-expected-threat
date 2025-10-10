@@ -17,7 +17,7 @@ Currently experimenting with different API services
 
 ## 2. [**FootyStats**] (https://footystats.org/api/ ) **WINNER**
     - NOTES: Free tier only includes a Premier League
-    - Need to play around more to be able to pull the data we want and archive into database of some sort. 
+    - Currently formatting the data into a data frame. Trying to figure out order of api calls for a automation
 
 3. [**SportsMonk**] (https://www.sportmonks.com/football-api/)
     - Covers all of european football, free plan only for 14 days. 
