@@ -2,7 +2,6 @@
 Just using the basic endpoints to see what kind of data I am working with"""
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
 import requests
 import os
 import json, jmespath
@@ -30,7 +29,7 @@ FOOTYSTATS_API_KEY = os.getenv("FOOTYSTATS_API_KEY")
 
 # 15050 (2025-2026) & 12325 (2024-2025)
 
-r = requests.get(f"https://api.football-data-api.com/league-list?key={FOOTYSTATS_API_KEY}")
+r = requests.get(f"https://api.football-data-api.com/todays-matches?key={FOOTYSTATS_API_KEY}")
 r.raise_for_status()
 data = r.json()
 with open("payload.json", "w", encoding="utf-8") as f:
