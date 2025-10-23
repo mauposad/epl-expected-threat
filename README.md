@@ -7,30 +7,8 @@ Project for Data Mining
     To deactivate: conda deactivate
 
 
-Currently experimenting with different API services
-    must be free, with good relevant data in an interesting field. 
+This repo is being used to create, develop, test and refine different data models for my data mining class. The dataI am currently working with is Premier League data from the 2024-2025 season. 3rd party api is listed below for your own viewing and documentation. 
+Current work is under apis folder. Further implementation will be turning this into a working web app with different features working with current ongoing season. 
 
-### List of API's I am testing
-
-1. [**Rolling Insights**] (https://rolling-insights.com/about-us/)
-    - Provides lots of different sports, also looks great if free plan is available
-
-## 2. [**FootyStats**] (https://footystats.org/api/ ) **WINNER**
+## [**FootyStats**] (https://footystats.org/api/ ) 
     - NOTES: Free tier only includes a Premier League
-    - Currently formatting the data into a data frame. Trying to figure out order of api calls for a automation
-
-3. [**SportsMonk**] (https://www.sportmonks.com/football-api/)
-    - Covers all of european football, free plan only for 14 days. 
-
-4. [**Highlightly**] (https://highlightly.net/ )
-    - free plan, api dashboard is very neat
-    - endpoints are rather basic and do not contain a whole lot of statistic heavy endpoints
-    
-5. [**NBA API**] (https://github.com/swar/nba_api)
-    - custom built APi to pull from NBA.com
-
-6. [**Public API**] (https://publicapis.dev)
-    - one place to find all publicly available API's
-    
-7. [**Strava**] (https://developers.strava.com/docs/reference/)
-    - strava api documentation
