@@ -12,3 +12,8 @@ Current work is under apis folder. Further implementation will be turning this i
 
 ## [**FootyStats**] (https://footystats.org/api/ ) 
     - NOTES: Free tier only includes a Premier League
+
+
+## Repo Structure
+- data_pipeline contains our script we used to get our data source. We saved it as a parquet so we can access all across our repo. Data_utils are our helper functions for our data_pipeline
+- models contains our jupyter notebook model scripts for our data mining class. 

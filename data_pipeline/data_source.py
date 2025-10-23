@@ -7,7 +7,7 @@ import os
 import json, jmespath
 import pandas as pd
 import ast
-from apis.data_utils import fetch_season_data, load_team_stats, clean_team_stats
+from data_utils import fetch_season_data, load_team_stats, clean_team_stats
 
 load_dotenv()
 FOOTYSTATS_API_KEY = os.getenv("FOOTYSTATS_API_KEY")
@@ -25,12 +25,11 @@ df_clean = clean_team_stats(df, True, True)
 df_full_numeric = clean_team_stats(df, keep_overall=False)
 print(df_clean.shape)
 print(df_full_numeric.head)
-
-
 df_clean.to_parquet("data/processed/season_12325_clean.parquet")
 
 # can read in any time with
-# df_clean.to_parquet("data/processed/season_12325_clean.parquet")
+df = pd.read_parquet("data/processed/season_12325_clean.parquet")
+print(df.head())
 
 
 # 15050 (2025-2026) & 12325 (2024-2025)
