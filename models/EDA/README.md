@@ -1,0 +1,102 @@
+# Guidelines we are taking for the process of EDA
+### 1. Understand the Context and Data Source
+
+Before touching the data:
+
+Define your goal or question: what are you trying to learn or predict?
+
+Understand how the data was collected and what each feature represents.
+
+Identify data types (numerical, categorical, time-series, text, etc.).
+
+Check for granularity — is each row an individual, a transaction, an event?
+
+📘 Example: In a Premier League dataset, determine whether rows represent matches, players, or events (shots, passes, goals, etc.).
+
+### 2. Data Cleaning and Quality Checks
+
+You can’t analyze dirty data. Inspect for:
+
+Missing values → quantify, visualize (df.isnull().sum()), decide to impute or drop.
+
+Duplicate rows → remove or consolidate.
+
+Inconsistent types or formats (e.g., strings vs. floats).
+
+Outliers → detect via z-scores, IQR, or visualization (boxplots, scatterplots).
+
+Invalid or impossible values (e.g., negative ages, percentages > 100).
+
+📘 Goal: Make sure the dataset is consistent and analysis-ready.
+
+### 3. Univariate Analysis (Single Variable)
+
+Understand the distribution and characteristics of individual features:
+
+Numerical variables: histograms, boxplots, mean/median/std, skewness, kurtosis.
+
+Categorical variables: bar charts, frequency tables, mode, proportions.
+
+Identify potential transformations (e.g., log-scale for skewed data).
+
+📘 Example: Distribution of goals scored per match or yellow cards per team.
+
+### 4. Bivariate / Multivariate Analysis (Left of here, need to make groups to visualize/ extract further data)
+
+Examine relationships between variables:
+
+Numerical–Numerical: scatter plots, correlation matrix, pairplots.
+
+Numerical–Categorical: boxplots, ANOVA tests.
+
+Categorical–Categorical: contingency tables, chi-square tests, stacked bar charts.
+
+Look for patterns, clusters, or linear/nonlinear relationships.
+
+📘 Example: Do teams with higher possession rates score more goals?
+
+### 5. Feature Relationships and Redundancy
+
+Detect multicollinearity using correlation heatmaps or VIF (Variance Inflation Factor).
+
+Identify redundant variables that provide overlapping information.
+
+Group variables into thematic categories (e.g., goals, passes, defense metrics).
+
+📘 Example: In your Premier League dataset, you grouped features into “goals,” “corners,” “cards,” etc.
+
+### 6. Time-Series or Grouped Patterns (if applicable)
+
+If data is temporal or hierarchical:
+
+Plot trends over time (rolling averages, seasonality, cycles).
+
+Examine group differences (e.g., by team, player, season).
+
+Aggregate metrics (mean goals per month, cumulative xG, etc.).
+
+### 7. Visualization
+
+EDA is visual-heavy because patterns are often clearest visually:
+
+Use histograms, scatterplots, boxplots, heatmaps, pairplots.
+
+Combine plots and summary stats for insights.
+
+Identify outliers, clusters, or unexpected relationships visually.
+
+📘 Libraries: matplotlib, seaborn, plotly, or pandas_profiling for quick reports.
+
+### 8. Summarize Key Insights
+
+End with a concise summary:
+
+Major patterns and correlations
+
+Outliers and potential data issues
+
+Relationships worth modeling
+
+Hypotheses to test later
+
+📘 Deliverable: a short narrative with visuals that connects data behavior to your research question.
