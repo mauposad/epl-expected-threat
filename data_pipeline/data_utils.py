@@ -20,7 +20,8 @@ FOOTYSTATS_API_KEY = os.getenv("FOOTYSTATS_API_KEY")
 
 def fetch_season_data(season_id: int, save_to_file: bool = True, output_dir: str = "data", timeout: int = 30):
     """
-    Fetches team and stats data for a given season from the FootyStats API and optionally saves it to a file.
+    Fetches team and stats data for a given season from the FootyStats API and saves it to a file.
+    League Teams API Call
 
     Args:
         season_id (int): The season ID to fetch data for.

@@ -100,3 +100,14 @@ Relationships worth modeling
 Hypotheses to test later
 
 📘 Deliverable: a short narrative with visuals that connects data behavior to your research question.
+
+
+
+# Food for tought from MacEvoy
+What are we trying to model here? What are variables that contribute to scoring? 
+Do some PCA and look at the eigen values to get a feel for relationships. He's not sure how that will turn out. 
+
+
+# Food for thought from King
+95th percentile w/ 18 degrees of freedom. Plyer packages. Tidyverse. Below -0.5 and above 0.5 for correlation values and p values below 0.05
+pairwise approach. Check email from King for further instructions. 
