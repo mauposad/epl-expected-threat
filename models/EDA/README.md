@@ -111,3 +111,16 @@ Do some PCA and look at the eigen values to get a feel for relationships. He's n
 # Food for thought from King
 95th percentile w/ 18 degrees of freedom. Plyer packages. Tidyverse. Below -0.5 and above 0.5 for correlation values and p values below 0.05
 pairwise approach. Check email from King for further instructions. 
+
+
+# food for thought
+    Different models and power scores for teams offense and defense. Power of the team is the aggregate sum of the scores of the players of the teams. 
+    As people get pulled off or subbed off, the team power score changes
+
+    Ignore everything and make a machine learning model. Let the machine find the pattern/ predictor. What is it looking at to get those predictors?
+    [https://baselight.app/u/blt/dataset/ultimate_soccer_dataset] (need to use a new dataset since our dataset is much too small for ML models)
+
+    Principle Component Analysis and ML might help us find something since they purely look at the numbers without the context. 
+    Modeling power. No values for power.
+
+    
