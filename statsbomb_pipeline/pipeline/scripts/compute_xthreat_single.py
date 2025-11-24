@@ -1,15 +1,61 @@
-from statsbomb_pipeline.pipeline.parsing.events_parser import parse_event_file
-from statsbomb_pipeline.pipeline.xthreat.transition_builder import build_transitions
-from statsbomb_pipeline.pipeline.xthreat.value_iteration import build_value_function
-from statsbomb_pipeline.pipeline.xthreat.xthreat_scorer import (
-    score_actions_with_xthreat,
-)
-from statsbomb_pipeline.pipeline.xthreat.xthreat_aggregator import aggregate_xthreat
+from pathlib import Path
+import pandas as pd
+from statsbomb_pipeline.pipeline.xthreat.run_single import compute_xthreat_for_match
 
-parsed = parse_event_file("statsbomb_pipeline/data/events/7298.json")
-transitions, shot_counts, shot_xg = build_transitions(parsed)
-values = build_value_function(transitions, shot_counts, shot_xg)
-scored = score_actions_with_xthreat(parsed, values)
-results = aggregate_xthreat(scored)
 
-print(results)
+def run_xthreat_batch(
+    index_path: Path,
+    output_dir: Path,
+    competition_ids=None,
+    season_ids=None,
+    match_ids=None,
+):
+    df = pd.read_parquet(index_path)
+
+    if competition_ids is not None:
+        df = df[df["competition_id"].isin(competition_ids)]
+    if season_ids is not None:
+        df = df[df["season_id"].isin(season_ids)]
+    if match_ids is not None:
+        df = df[df["match_id"].isin(match_ids)]
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    for _, row in df.iterrows():
+        match_id = row["match_id"]
+        outpath = output_dir / f"{match_id}.parquet"
+
+        print(f"Processing match {match_id}…")
+
+        xt_df = compute_xthreat_for_match(Path(row["event_path"]))
+
+        # attach metadata always
+        xt_df["match_id"] = match_id
+        xt_df["competition_id"] = row["competition_id"]
+        xt_df["season_id"] = row["season_id"]
+        xt_df["home_team"] = row["home_team"]
+        xt_df["away_team"] = row["away_team"]
+
+        xt_df.to_parquet(outpath, index=False)
+
+
+if __name__ == "__main__":
+    import argparse
+
+    p = argparse.ArgumentParser()
+    p.add_argument("--index", type=Path, default=Path("data/index/matches.parquet"))
+    p.add_argument("--output", type=Path, default=Path("data/processed/xthreat"))
+
+    p.add_argument("--competition", type=int, nargs="*")
+    p.add_argument("--season", type=int, nargs="*")
+    p.add_argument("--match", type=int, nargs="*")
+
+    args = p.parse_args()
+
+    run_xthreat_batch(
+        args.index,
+        args.output,
+        competition_ids=args.competition,
+        season_ids=args.season,
+        match_ids=args.match,
+    )
