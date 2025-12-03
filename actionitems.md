@@ -1,15 +1,15 @@
 # Project Action Items — Data Mining Premier League
 
 ## Phase 0 — Framing (Current)
-- [ ] Finalize abstract (use revised version)
-- [ ] Lock season: Premier League 2018–2019
-- [ ] Define target variables  
-  - [ ] Option A: Goals + Assists per 90  
-  - [ ] Option B: xG + xA per 90  
+- [x] Finalize abstract (use revised version)
+- [x] Lock season: Premier League 2015–2016
+- [x] Define target variables  
+  - [x] Option A: Goals + Assists per 90  
+  - [x] Option B: xG + xA per 90  
   - [ ] Decide one primary, one optional secondary
-- [ ] Define population  
-  - [ ] Minimum minutes (e.g., > 900)  
-  - [ ] Positions included (e.g., FW, AM, WM)
+- [x] Define population  
+  - [x] Minimum minutes (e.g., > 900)  
+  - [x] Positions included (e.g., FW, AM, WM)
 
 ---
 

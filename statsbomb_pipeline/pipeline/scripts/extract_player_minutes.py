@@ -11,9 +11,28 @@ BASE_DIR = Path(__file__).resolve().parents[2]  # statsbomb_pipeline/
 RAW_DIR = BASE_DIR / "data" / "raw"
 MATCHES_FILE = RAW_DIR / "matches" / "2" / "27.json"  # EPL 2015/2016
 LINEUPS_DIR = RAW_DIR / "lineups"
-EVENTS_DIR = RAW_DIR / "events"
+EVENTS_DIR = RAW_DIR / "events"  # only used if we want match_length from events
 
-OUTPUT = BASE_DIR / "data" / "processed" / "player_minutes_2015_2016.parquet"
+OUTPUT = BASE_DIR / "data" / "processed" / "player_minutes_2015_2016.csv"
+
+DEFAULT_MATCH_LENGTH = 90.0
+
+
+# ----------------------------------------------------
+# UTIL: PARSE "MM:SS" TO FLOAT MINUTES
+# ----------------------------------------------------
+def parse_time_str(t):
+    """
+    Convert 'MM:SS' string to float minutes.
+    If t is None → treat as end of match.
+    """
+    if t is None:
+        return DEFAULT_MATCH_LENGTH
+    try:
+        mm, ss = t.split(":")
+        return int(mm) + int(ss) / 60.0
+    except:
+        return 0.0
 
 
 # ----------------------------------------------------
@@ -25,34 +44,22 @@ def load_matches():
 
 
 # ----------------------------------------------------
-# EXTRACT SUBSTITUTIONS
+# GET MATCH LENGTH (OPTIONAL)
 # ----------------------------------------------------
-def extract_sub_events(events_json):
-    subs = []
-    for ev in events_json:
-        if ev.get("type", {}).get("name") == "Substitution":
-            minute = ev.get("minute", 0)
-
-            player_off = ev.get("player", {}).get("id")
-            player_on = ev.get("substitution", {}).get("replacement", {}).get("id")
-
-            team_id = ev.get("team", {}).get("id")
-            team_name = ev.get("team", {}).get("name")
-
-            subs.append(
-                {
-                    "minute": minute,
-                    "off_id": player_off,
-                    "on_id": player_on,
-                    "team_id": team_id,
-                    "team_name": team_name,
-                }
-            )
-    return subs
+def get_match_length(events_json):
+    """
+    Optional: find actual max minute from events.
+    If events are missing or bad, fallback to 90.0.
+    """
+    try:
+        max_minute = max(ev.get("minute", 0) for ev in events_json)
+        return max(max_minute, 90.0)
+    except:
+        return 90.0
 
 
 # ----------------------------------------------------
-# PROCESS ONE MATCH
+# PROCESS ONE MATCH USING ONLY LINEUPS FOR MINUTES
 # ----------------------------------------------------
 def process_match(match_row):
     match_id = match_row["match_id"]
@@ -65,8 +72,7 @@ def process_match(match_row):
 
     home_score = match_row["home_score"]
     away_score = match_row["away_score"]
-
-    match_date = match_row.get("match_date", None)
+    match_date = match_row.get("match_date")
 
     # Load lineups
     lineup_path = LINEUPS_DIR / f"{match_id}.json"
@@ -76,93 +82,85 @@ def process_match(match_row):
     with open(lineup_path, "r", encoding="utf-8") as f:
         lineups = json.load(f)
 
-    # Load events
+    # Load events only to compute match_length — not for subs
     events_path = EVENTS_DIR / f"{match_id}.json"
-    if not events_path.exists():
-        return []
+    if events_path.exists():
+        with open(events_path, "r", encoding="utf-8") as f:
+            events = json.load(f)
+        match_length = get_match_length(events)
+    else:
+        match_length = DEFAULT_MATCH_LENGTH
 
-    with open(events_path, "r", encoding="utf-8") as f:
-        events = json.load(f)
-
-    subs = extract_sub_events(events)
+    rows = []
 
     # ----------------------------------------------------
-    # SETUP PLAYER REGISTER WITH STARTERS
+    # TRUE MINUTES + STARTER + POSITION LOGIC
     # ----------------------------------------------------
-    players = {}  # player_id → dict
-
     for team in lineups:
         team_id = team["team_id"]
         team_name = team["team_name"]
 
+        opponent_id = away_id if team_id == home_id else home_id
+        opponent_name = away_name if team_id == home_id else home_name
+
         for p in team["lineup"]:
             pid = p["player_id"]
             pname = p["player_name"]
+            spells = p.get("positions", [])
 
-            # Position: first listed position, per your lineup schema
-            pos_list = p.get("positions", [])
-            position = pos_list[0]["position"] if pos_list else None
+            # Compute minutes from spells
+            if not spells:
+                minutes_played = 0.0
+                position_name = None
+                start_min = None
+                end_min = None
+                is_starter = False
+            else:
+                minutes_played = 0.0
+                start_min = float("inf")
+                end_min = 0.0
 
-            players[pid] = {
-                "match_id": match_id,
-                "player_id": pid,
-                "player_name": pname,
-                "team_id": team_id,
-                "team_name": team_name,
-                "position": position,
-                "is_starter": True,
-                "start_min": 0,
-                "end_min": 90,
-                "home_score": home_score,
-                "away_score": away_score,
-                "match_date": match_date,
-                "opponent_id": away_id if team_id == home_id else home_id,
-                "opponent_name": away_name if team_id == home_id else home_name,
-            }
+                # POSITION = first spell's position (standard StatsBomb convention)
+                position_name = spells[0].get("position")
 
-    # ----------------------------------------------------
-    # PROCESS SUBSTITUTIONS
-    # ----------------------------------------------------
-    for s in subs:
-        minute = s["minute"]
-        off_id = s["off_id"]
-        on_id = s["on_id"]
-        team_id = s["team_id"]
-        team_name = s["team_name"]
+                # Check each time spell
+                for sp in spells:
+                    t_from = parse_time_str(sp.get("from"))
+                    t_to = parse_time_str(sp.get("to"))
 
-        # Player OFF
-        if off_id in players:
-            players[off_id]["end_min"] = minute
+                    # Update minutes
+                    minutes_played += max(0.0, t_to - t_from)
 
-        # Player ON
-        if on_id is not None:
-            if on_id not in players:
-                players[on_id] = {
+                    # Update start/end min ranges
+                    start_min = min(start_min, t_from)
+                    end_min = max(end_min, t_to)
+
+                # Starter = any spell starts at 0:00
+                is_starter = any(parse_time_str(sp.get("from")) == 0.0 for sp in spells)
+
+                # Normalize infinite values if spells were malformed
+                if start_min == float("inf"):
+                    start_min = None
+
+            rows.append(
+                {
                     "match_id": match_id,
-                    "player_id": on_id,
-                    "player_name": None,
+                    "player_id": pid,
+                    "player_name": pname,
                     "team_id": team_id,
                     "team_name": team_name,
-                    "position": None,
-                    "is_starter": False,
-                    "start_min": minute,
-                    "end_min": 90,
+                    "position": position_name,
+                    "is_starter": is_starter,
+                    "start_min": start_min,
+                    "end_min": end_min,
+                    "minutes_played": minutes_played,
                     "home_score": home_score,
                     "away_score": away_score,
                     "match_date": match_date,
-                    "opponent_id": away_id if team_id == home_id else home_id,
-                    "opponent_name": away_name if team_id == home_id else home_name,
+                    "opponent_id": opponent_id,
+                    "opponent_name": opponent_name,
                 }
-            else:
-                players[on_id]["start_min"] = minute
-                players[on_id]["is_starter"] = False
-
-    # Convert to list
-    rows = []
-    for pid, pdata in players.items():
-        minutes = max(0, pdata["end_min"] - pdata["start_min"])
-        pdata["minutes_played"] = minutes
-        rows.append(pdata)
+            )
 
     return rows
 
@@ -182,7 +180,7 @@ def run():
 
     df = pd.DataFrame(all_rows)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    df.to_parquet(OUTPUT, index=False)
+    df.to_csv(OUTPUT, index=False)
 
     print(f"\nSaved minutes file → {OUTPUT}")
     return df
