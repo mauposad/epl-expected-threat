@@ -5,11 +5,10 @@ Sanity checks for the extract_palyer_minutes.py file.
 
 import pandas as pd
 
-df = pd.read_csv("data/processed/player_minutes_2015_2016.csv")
-print(df.head(20))
-print(df.columns)
-print(df.shape)
-
+# df = pd.read_csv("data/processed/player_minutes_2015_2016.csv")
+# print(df.head(20))
+# print(df.columns)
+# print(df.shape)
 
 # players with 90+ minutes but zero events later (after we wire that in),
 # but for now, just look at multiple keepers with full 90 for the same team/match
@@ -41,3 +40,7 @@ print(df.shape)
 # print(active_players["players_with_minutes"].describe())
 # print(active_players.sort_values("players_with_minutes").head())
 # print(active_players.sort_values("players_with_minutes").tail())
+
+df = pd.read_parquet("data/processed/xthreat/3753972.parquet")
+print(df.head(20))
+print(df.columns)

@@ -14,7 +14,7 @@
 ---
 
 ## Phase 1 — Build Modeling Table (Critical Path)
-- [ ] Load cleaned StatsBomb data
+- [x] Load cleaned StatsBomb data
 - [ ] Load xThreat parquet (already computed)
 - [ ] Aggregate xThreat to player-season level
 - [ ] Aggregate StatsBomb metrics to player-season level:
