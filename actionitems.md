@@ -16,18 +16,17 @@
 ## Phase 1 — Build Modeling Table (Critical Path)
 - [x] Load cleaned StatsBomb data
 - [x] Load xThreat parquet (already computed)
-- [ ] Aggregate xThreat to player-season level
-- [ ] Aggregate StatsBomb metrics to player-season level:
-  - [ ] xG, xA
-  - [ ] Shots/90
-  - [ ] Key passes/90
-  - [ ] Progressive passes/carries
+- [x] Aggregate xThreat to player-season level
+- [x] Aggregate StatsBomb metrics to player-season level:
+  - [x] xG, xA
+  - [x] Shots/90
+  - [x] Progressive passes/carries
   - [ ] Touches in final third/box (optional)
-- [ ] Merge features into one DataFrame
-- [ ] Filter by minutes & positions
-- [ ] Remove or impute missing values
-- [ ] Select ~25–35 features for modeling
-- [ ] Save modeling table to `data/processed/modeling_table.parquet`
+- [x] Merge features into one DataFrame
+- [x] Filter by minutes & positions
+- [x] Remove or impute missing values
+- [x] Select ~25–35 features for modeling
+- [x] Save modeling table
 
 ---
 

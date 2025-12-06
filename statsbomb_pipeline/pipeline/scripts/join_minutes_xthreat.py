@@ -2,14 +2,15 @@ import pandas as pd
 from pathlib import Path
 
 MINUTES = Path("statsbomb_pipeline/data/processed/player_minutes_2015_2016.csv")
-XTHREAT = Path("statsbomb_pipeline/data/processed/xthreat_player_match.parquet")
+XTHREAT = Path("statsbomb_pipeline/data/processed/xthreat_player_match.csv")
 OUTPUT = Path("statsbomb_pipeline/data/processed/player_match_model_data.csv")
 
 
 def merge_minutes_xThreat():
 
     df_min = pd.read_csv(MINUTES)
-    df_xt = pd.read_parquet(XTHREAT)
+    df_xt = pd.read_csv(XTHREAT)
+    df_min = df_min[df_min["minutes_played"] >= 1.0]
 
     merged = df_min.merge(df_xt, on=["player_id", "match_id", "team_id"], how="left")
 

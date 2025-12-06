@@ -1,13 +1,13 @@
 import pandas as pd
 from pathlib import Path
 
-MERGED = Path("statsbomb_pipeline/data/processed/player_match_model_data.parquet")
+MERGED = Path("statsbomb_pipeline/data/processed/player_match_model_data.csv")
 OUTPUT = Path("statsbomb_pipeline/data/processed/player_season_model_dataset.csv")
 
 
 def build_season_dataset():
     print("Loading merged player-match dataset...")
-    df = pd.read_parquet(MERGED)
+    df = pd.read_csv(MERGED)
 
     # -----------------------------------------------------------
     # 1. Clean and normalize columns
@@ -16,15 +16,14 @@ def build_season_dataset():
     # Use player_name_x unless missing, else fallback to player_name_y
     df["player_name"] = df["player_name_x"].fillna(df["player_name_y"])
 
-    # Some subs have missing start_min/end_min — fix minutes calculation
-    df["minutes_played"] = df["minutes_played"].fillna(0)
+    # After A1 fixes, minutes_played should never be NaN or zero.
+    df = df[df["minutes_played"] >= 1.0].copy()
 
-    # Position may be empty for subs or GK edge cases
-    df["position"] = df["position"].fillna("Unknown")
+    # Drop rows with missing position (should be none now)
+    df = df.dropna(subset=["position"])
 
     # Mark match played (any minutes > 0 means appearance)
-    df["match_played_flag"] = (df["minutes_played"] > 0).astype(int)
-
+    df["match_played_flag"] = 1
     # -----------------------------------------------------------
     # 2. Aggregate per-player season totals
     # -----------------------------------------------------------
@@ -47,9 +46,6 @@ def build_season_dataset():
     # -----------------------------------------------------------
 
     season["minutes_90s"] = season["minutes_played_total"] / 90.0
-
-    # Avoid divide-by-zero
-    season["minutes_90s"] = season["minutes_90s"].replace({0: 1e-9})
 
     season["xThreat_per90"] = season["xThreat_total"] / season["minutes_90s"]
     season["xThreat_pass_per90"] = season["xThreat_pass_total"] / season["minutes_90s"]

@@ -24,7 +24,7 @@ def aggregate_player_season_minutes():
     df = pd.read_csv(MINUTES_FILE)
 
     # Consider only matches where player actually played
-    df_active = df[df["minutes_played"] > 0].copy()
+    df_active = df[df["minutes_played"] >= 1.0].copy()
 
     # Group by player_id
     grouped = df_active.groupby("player_id")
@@ -46,9 +46,7 @@ def aggregate_player_season_minutes():
         # Full 90s (allow 작은 float noise, e.g., 89.5+)
         full_90s = (g["minutes_played"] >= 89.5).sum()
 
-        minutes_per_match = (
-            minutes_played_total / matches_played if matches_played > 0 else 0.0
-        )
+        minutes_per_match = minutes_played_total / matches_played if matches_played > 0 else 0.0
 
         agg_rows.append(
             {

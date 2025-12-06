@@ -110,11 +110,7 @@ def process_match(match_row):
 
             # Compute minutes from spells
             if not spells:
-                minutes_played = 0.0
-                position_name = None
-                start_min = None
-                end_min = None
-                is_starter = False
+                continue
             else:
                 minutes_played = 0.0
                 start_min = float("inf")
@@ -128,9 +124,11 @@ def process_match(match_row):
                     t_from = parse_time_str(sp.get("from"))
                     t_to = parse_time_str(sp.get("to"))
 
+                    if t_from is None or t_to is None:
+                        continue
+
                     # Update minutes
                     minutes_played += max(0.0, t_to - t_from)
-
                     # Update start/end min ranges
                     start_min = min(start_min, t_from)
                     end_min = max(end_min, t_to)
@@ -142,6 +140,9 @@ def process_match(match_row):
                 if start_min == float("inf"):
                     start_min = None
 
+            # Skip rows with invalid or zero minutes
+            if minutes_played <= 0 or start_min is None or end_min <= 0:
+                continue
             rows.append(
                 {
                     "match_id": match_id,
