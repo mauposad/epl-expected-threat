@@ -43,9 +43,7 @@ def build_value_function(
 
     # Transition probabilities P[z, k] = transitions[z,k] / total_actions[z]
     P = np.zeros_like(transitions, dtype=float)
-    P[nonzero_mask, :] = (
-        transitions[nonzero_mask, :] / actions_from_zone[nonzero_mask, None]
-    )
+    P[nonzero_mask, :] = transitions[nonzero_mask, :] / actions_from_zone[nonzero_mask, None]
 
     # Initialize values to zero
     values = np.zeros(NUM_ZONES, dtype=float)
@@ -59,9 +57,7 @@ def build_value_function(
         values = new_values
 
         if delta < tol:
-            print(
-                f"Value iteration converged in {it + 1} iterations (delta={delta:.2e})"
-            )
+            print(f"Value iteration converged in {it + 1} iterations (delta={delta:.2e})")
             break
     else:
         print(f"Value iteration reached max_iters={max_iters} with delta={delta:.2e}")
@@ -97,4 +93,20 @@ def test_value_iteration(parsed_events):
     for idx in top_indices:
         print(f"Zone {idx}: {values[idx]:.4f}")
 
+    return values
+
+
+def compute_value_table(parsed_events):
+    """
+    Compute xThreat value table for all zones (192 values)
+    using transitions + value iteration.
+
+    Args:
+        parsed_events: list of parsed StatsBomb event dicts
+
+    Returns:
+        values: numpy array length 192
+    """
+    transitions, shot_counts, shot_xg = build_transitions(parsed_events)
+    values = build_value_function(transitions, shot_counts, shot_xg)
     return values

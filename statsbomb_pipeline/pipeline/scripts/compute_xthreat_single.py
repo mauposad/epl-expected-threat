@@ -1,35 +1,34 @@
+# compute_xthreat_single.py
+
 from pathlib import Path
 import pandas as pd
 from statsbomb_pipeline.pipeline.xthreat.run_single import compute_xthreat_for_match
 
+# DEFAULT PATHS
+MATCH_INDEX = Path("statsbomb_pipeline/data/index/matches.parquet")
+OUTPUT_DIR = Path("statsbomb_pipeline/data/processed/xthreat_events")
 
-def run_xthreat_batch(
-    index_path: Path,
-    output_dir: Path,
-    competition_ids=None,
-    season_ids=None,
-    match_ids=None,
-):
-    df = pd.read_parquet(index_path)
 
-    if competition_ids is not None:
-        df = df[df["competition_id"].isin(competition_ids)]
-    if season_ids is not None:
-        df = df[df["season_id"].isin(season_ids)]
-    if match_ids is not None:
-        df = df[df["match_id"].isin(match_ids)]
-
-    output_dir.mkdir(parents=True, exist_ok=True)
+def run_xthreat_batch():
+    """
+    Compute event-level xThreat for all matches in the index file.
+    Produces one parquet per match at:
+        data/processed/xthreat_events/{match_id}.parquet
+    """
+    df = pd.read_parquet(MATCH_INDEX)
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     for _, row in df.iterrows():
         match_id = row["match_id"]
-        outpath = output_dir / f"{match_id}.parquet"
+        events_path = Path(row["event_path"])
+        outpath = OUTPUT_DIR / f"{match_id}.parquet"
 
-        print(f"Processing match {match_id}…")
+        print(f"Processing match {match_id} ...")
 
-        xt_df = compute_xthreat_for_match(Path(row["event_path"]))
+        # Event-level xThreat DataFrame
+        xt_df = compute_xthreat_for_match(events_path)
 
-        # attach metadata always
+        # Attach metadata
         xt_df["match_id"] = match_id
         xt_df["competition_id"] = row["competition_id"]
         xt_df["season_id"] = row["season_id"]
@@ -38,24 +37,8 @@ def run_xthreat_batch(
 
         xt_df.to_parquet(outpath, index=False)
 
+        print(f"✓ Saved {outpath}")
+
 
 if __name__ == "__main__":
-    import argparse
-
-    p = argparse.ArgumentParser()
-    p.add_argument("--index", type=Path, default=Path("data/index/matches.parquet"))
-    p.add_argument("--output", type=Path, default=Path("data/processed/xthreat"))
-
-    p.add_argument("--competition", type=int, nargs="*")
-    p.add_argument("--season", type=int, nargs="*")
-    p.add_argument("--match", type=int, nargs="*")
-
-    args = p.parse_args()
-
-    run_xthreat_batch(
-        args.index,
-        args.output,
-        competition_ids=args.competition,
-        season_ids=args.season,
-        match_ids=args.match,
-    )
+    run_xthreat_batch()

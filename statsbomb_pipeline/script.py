@@ -41,6 +41,6 @@ import pandas as pd
 # print(active_players.sort_values("players_with_minutes").head())
 # print(active_players.sort_values("players_with_minutes").tail())
 
-df = pd.read_parquet("data/processed/xthreat/3753972.parquet")
+df = pd.read_parquet("data/processed/xthreat_events/3753972.parquet")
 print(df.head(20))
 print(df.columns)
