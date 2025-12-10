@@ -31,21 +31,21 @@
 ---
 
 ## Phase 2 — Exploratory Data Analysis
-- [ ] Histogram of target variable(s)
-- [ ] Scatterplots of xT vs output metrics
-- [ ] Correlation heatmap (reduced feature set)
-- [ ] Boxplots by position
-- [ ] Save all visuals in `reports/figures/`
+- [x] Histogram of target variable(s)
+- [x] Scatterplots of xT vs output metrics
+- [x] Correlation heatmap (reduced feature set)
+- [x] Boxplots by position
+- [x] Save all visuals in `reports/figures/`
 
 ---
 
 ## Phase 3 — PCA & Archetypes
-- [ ] Standardize selected features
-- [ ] Fit PCA on 15–25 attacking features
-- [ ] Examine explained variance
-- [ ] Interpret component loadings
-- [ ] Produce PCA scatterplot (PC1 vs PC2)
-- [ ] Add PCA components to modeling table
+- [x] Standardize selected features
+- [x] Fit PCA on attacking features
+- [x] Examine explained variance
+- [x] Interpret component loadings
+- [x] Produce PCA scatterplot (PC1 vs PC2)
+- [x] Add PCA components to modeling table
 
 ---
 

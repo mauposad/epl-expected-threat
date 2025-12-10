@@ -14,7 +14,6 @@ def merge_minutes_xThreat():
 
     merged = df_min.merge(df_xt, on=["player_id", "match_id", "team_id"], how="left")
 
-    # Replace NaN xThreat with 0 (players who played but had no Pass/Carry)
     merged.fillna(
         {"xThreat_total": 0, "xThreat_pass": 0, "xThreat_carry": 0, "xg_total": 0}, inplace=True
     )

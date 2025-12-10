@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-MERGED = Path("statsbomb_pipeline/data/processed/player_match_model_data.csv")
+MERGED = Path("statsbomb_pipeline/data/processed/second/player_match_model_data.csv")
 OUTPUT = Path("statsbomb_pipeline/data/processed/player_season_model_dataset.csv")
 
 
@@ -42,7 +42,39 @@ def build_season_dataset():
     )
 
     # -----------------------------------------------------------
-    # 3. Compute per 90 metrics
+    # Step 3.  Collapse to ONE ROW per player per team
+    # -----------------------------------------------------------
+    print("Collapsing positional rows into a single player-season entry...")
+
+    # Step 1: choose primary position (where the player played the most minutes)
+    primary_positions = (
+        season.sort_values("minutes_played_total", ascending=False)
+        .groupby(["player_id", "team_id"], as_index=False)
+        .first()[["player_id", "team_id", "position"]]
+        .rename(columns={"position": "primary_position"})
+    )
+
+    # aggregate totals across *all* positions
+    collapsed = season.groupby(
+        ["player_id", "player_name", "team_id", "team_name"], as_index=False
+    ).agg(
+        minutes_played_total=("minutes_played_total", "sum"),
+        matches_played=("matches_played", "sum"),
+        xThreat_total=("xThreat_total", "sum"),
+        xThreat_pass_total=("xThreat_pass_total", "sum"),
+        xThreat_carry_total=("xThreat_carry_total", "sum"),
+        xg_total=("xg_total", "sum"),
+    )
+
+    # Step 3 cont: attach the chosen primary position
+    collapsed = collapsed.merge(primary_positions, on=["player_id", "team_id"], how="left")
+    collapsed = collapsed.rename(columns={"primary_position": "position"})
+
+    # Replace the original `season` df
+    season = collapsed
+
+    # -----------------------------------------------------------
+    # 4. Compute per 90 metrics
     # -----------------------------------------------------------
 
     season["minutes_90s"] = season["minutes_played_total"] / 90.0
@@ -55,7 +87,7 @@ def build_season_dataset():
     season = season.fillna(0)
 
     # -----------------------------------------------------------
-    # 4. Save final dataset
+    # 5. Save final dataset
     # -----------------------------------------------------------
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
