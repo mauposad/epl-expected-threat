@@ -73,8 +73,9 @@
 ## Phase 6 — Final Deliverables
 - [ ] Notebook: Feature Engineering
 - [ ] Notebook: EDA
-- [ ] Notebook: PCA + Archetypes
-- [ ] Notebook: Regression + Classification Models
+- [ ] Notebook: PCA
+- [ ] Notebook: Regression 
+- [ ] Notebook: Classification Models
 - [ ] Final report summarizing:
   - [ ] Methods
   - [ ] Key findings
