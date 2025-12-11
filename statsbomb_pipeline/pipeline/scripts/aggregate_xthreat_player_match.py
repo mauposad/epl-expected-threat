@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 XTHREAT_EVENTS_DIR = Path("statsbomb_pipeline/data/processed/xthreat_events")
-OUTPUT = Path("statsbomb_pipeline/data/processed/xthreat_player_match.csv")
+OUTPUT = Path("statsbomb_pipeline/data/processed/team/xthreat_player_match.csv")
 
 
 def aggregate_player_match_xthreat():

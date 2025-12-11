@@ -8,6 +8,7 @@ def parse_event_file(path: str | Path):
     Pass, Carry, and Shot events for xThreat calculations.
     """
     path = Path(path)
+    match_id = int(path.stem)  # filename without extension
     with path.open("r", encoding="utf-8") as f:
         events = json.load(f)
 
@@ -19,6 +20,7 @@ def parse_event_file(path: str | Path):
 
         # Base row for all extracted events
         row = {
+            "match_id": match_id,
             "event_type": etype,
             "team_id": e.get("team", {}).get("id"),
             "team": e.get("team", {}).get("name"),

@@ -1,6 +1,8 @@
 # compute_xthreat_single.py
 
 from pathlib import Path
+import sys
+
 import pandas as pd
 from statsbomb_pipeline.pipeline.xthreat.run_single import compute_xthreat_for_match
 

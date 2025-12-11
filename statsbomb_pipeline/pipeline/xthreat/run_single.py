@@ -22,11 +22,20 @@ OUTPUT_DIR = Path("statsbomb_pipeline/data/processed/xthreat_debug")
 
 
 def compute_xthreat_for_match(events_path: Path) -> pd.DataFrame:
-    """Return event-level xThreat DataFrame (for batch processor)."""
     parsed_events = parse_event_file(events_path)
     zone_values = compute_value_table(parsed_events)
     scored = score_actions_with_xthreat(parsed_events, zone_values)
-    return pd.DataFrame(scored)
+
+    df = pd.DataFrame(scored)
+
+    # Add match_id
+    df["match_id"] = int(events_path.stem)
+
+    # Rename xThreat column if needed
+    if "xT" in df.columns:
+        df = df.rename(columns={"xT": "xthreat"})
+
+    return df
 
 
 def compute_xthreat_and_save(events_path: Path, output_dir: Path):

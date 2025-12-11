@@ -46,29 +46,4 @@ def run_xthreat_batch(
 
 
 if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser(description="Batch xThreat processing")
-    parser.add_argument(
-        "--index",
-        type=Path,
-        default=Path("statsbomb_pipeline/data/index/matches.parquet"),
-    )
-    parser.add_argument(
-        "--output",
-        type=Path,
-        default=Path("statsbomb_pipeline/data/processed/xthreat"),
-    )
-    parser.add_argument("--competition", type=int, nargs="*")
-    parser.add_argument("--season", type=int, nargs="*")
-    parser.add_argument("--match", type=int, nargs="*")
-
-    args = parser.parse_args()
-
-    run_xthreat_batch(
-        index_path=args.index,
-        output_dir=args.output,
-        competition_ids=args.competition,
-        season_ids=args.season,
-        match_ids=args.match,
-    )
+    run_xthreat_batch()
