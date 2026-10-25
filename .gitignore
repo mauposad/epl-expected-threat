@@ -206,27 +206,23 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 # ----------------------------------------
-# StatsBomb Open Data (large raw files)
+# Data: raw StatsBomb JSON (~1.1 GB) and generated tables.
+# Rebuild with `make data`.
 # ----------------------------------------
-statsbomb_pipeline/data/
-statsbomb_pipeline/data/*
-
-# Ignore processed datasets (parquet/csv/json formats)
-statsbomb_pipeline/processed/
-statsbomb_pipeline/processed/*
 data/
-data/*
 
 # Ignore typical large data file formats anywhere
 *.csv
 *.parquet
 *.json
+*.npy
 *.tsv
 *.xlsx
 *.feather
 *.pkl
 *.pickle
 *.h5
+!.vscode/*.json
 
 # Local logs and caches
 logs/
